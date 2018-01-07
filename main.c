@@ -276,6 +276,18 @@ main(int ac, char **av)
 
 		/* stderr stays open, start SIGHUP ignoring, SIGCHLD handling */
 		initsignals();
+
+		/* setup logging for foreground daemons */
+
+		if (SyslogOpt) {
+			/* 2> /dev/null */
+			fclose(stderr);
+			dup2(1, 2);
+
+			/* open syslog */
+			openlog(LOG_IDENT, LOG_CONS|LOG_PID, LOG_CRON);
+
+		}
 	}
 
 	/* close all other fds, including the ones we opened as /dev/null and LogFile */
